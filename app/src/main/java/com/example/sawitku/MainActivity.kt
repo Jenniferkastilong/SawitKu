@@ -1,20 +1,28 @@
-package com.example.sawitku
+// PERBAIKAN UTAMA ADA DI BARIS INI
+package com.example.sawitku // Pastikan ini sesuai dengan struktur folder proyek Anda
 
-import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import android.os.Bundle
+import android.widget.Button
+// Hapus 'import android.R' jika ada, karena itu salah.
+// Import R yang benar akan otomatis ditambahkan jika nama package sudah sesuai.
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+
+        // Kode di bawah ini seharusnya tidak error lagi setelah package name diperbaiki
+        val buttonLogin: Button = findViewById(R.id.button_login)
+        val buttonRegister: Button = findViewById(R.id.button_register)
+
+        buttonLogin.setOnClickListener {
+            startActivity(Intent(this, LoginActivity::class.java))
+        }
+
+        buttonRegister.setOnClickListener {
+            startActivity(Intent(this, RegisterActivity::class.java))
         }
     }
 }
