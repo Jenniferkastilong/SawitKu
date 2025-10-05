@@ -1,3 +1,25 @@
 <resources>
-    <string name="app_name">SawitKu</string>
+        <string name="app_name">SawitKu</string>
+
+        <!-- Header -->
+        <string name="wilayah">Wilayah:</string>
+        <string name="riau">Riau</string>
+
+        <!-- Card Total Lahan -->
+        <string name="total_lahan_terdata">Total Lahan Terdata</string>
+        <string name="_1_250_ha">1.250 Ha</string>
+        <string name="update_terakhir_25_okt_2024">Update terakhir: 25 Okt 2024</string>
+
+        <!-- Card Jumlah Petani -->
+        <string name="jumlah_petani_wilayah">Jumlah Petani Wilayah</string>
+        <string name="_250">250</string>
+
+        <!-- Card Notifikasi -->
+        <string name="jangan_lupa_laporkan_lahan_bulan_ini">Jangan lupa laporkan lahan bulan ini!</string>
+
+        <!-- Quick Menu -->
+        <string name="komunitas">Komunitas</string>
+        <string name="berita_sawit">Berita Sawit</string>
+        <string name="konsultasi">Konsultasi</string>
+        <string name="akun">Akun</string>
 </resources>

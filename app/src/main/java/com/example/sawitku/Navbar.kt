@@ -1,51 +1,60 @@
 package com.example.sawitku
 
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 
-class Navbar : AppCompatActivity() {
+class Navbar : Fragment() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(R.layout.fragment_navbar, container, false)
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+        val btnHome = view.findViewById<Button>(R.id.btnHome)
+        val btnProfile = view.findViewById<Button>(R.id.btnProfile)
+        val btnSetting = view.findViewById<Button>(R.id.btnSetting)
+
+        val buttons = listOf(btnHome, btnProfile, btnSetting)
+
+        fun setActiveButton(activeButton: Button) {
+            buttons.forEach { it.isSelected = (it == activeButton) }
         }
 
-        // load fragment pertama kali (Home)
+        // tampilkan Home fragment pertama kali
         if (savedInstanceState == null) {
-            replaceFragment(Home())
+            childFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, Home())
+                .commit()
+            setActiveButton(btnHome)
         }
-
-        val btnHome = findViewById<Button>(R.id.btnHome)
-        val btnProfile = findViewById<Button>(R.id.btnProfile)
-        val btnSetting = findViewById<Button>(R.id.btnSetting)
 
         btnHome.setOnClickListener {
-            replaceFragment(Home())
+            childFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, Home())
+                .commit()
+            setActiveButton(btnHome)
         }
 
         btnProfile.setOnClickListener {
-            replaceFragment(Profile())
+            childFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, Profile())
+                .commit()
+            setActiveButton(btnProfile)
         }
 
         btnSetting.setOnClickListener {
-            replaceFragment(Setting())
+            childFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, Setting())
+                .commit()
+            setActiveButton(btnSetting)
         }
-    }
 
-    private fun replaceFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, fragment)
-            .commit()
+        return view
     }
 }
