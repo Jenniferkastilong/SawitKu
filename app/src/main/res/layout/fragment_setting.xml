@@ -58,7 +58,7 @@
                     android:id="@+id/tvGantiProfil"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Ganti Profil"
+                    android:text="Ganti Profile"
                     android:textStyle="bold"
                     android:textColor="@android:color/black"
                     android:layout_marginBottom="8dp" />
@@ -110,7 +110,7 @@
                     android:id="@+id/tvTutorial"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tutorial Applikasi"
+                    android:text="Tutorial Aplikasi"
                     android:textStyle="bold"
                     android:textColor="@android:color/black"
                     android:layout_marginBottom="8dp" />
