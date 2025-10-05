@@ -30,27 +30,17 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:text="Beranda"
+            android:text="Home"
             android:textColor="@color/navbar_button_color"
             android:textSize="14sp" />
 
         <Button
-            android:id="@+id/btnLahan"
+            android:id="@+id/btnProfile"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:text="Laporan Lahan"
-            android:textColor="@color/navbar_button_color"
-            android:textSize="14sp" />
-
-        <Button
-            android:id="@+id/btnKomunitas"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:text="Komunitas"
+            android:text="Profile"
             android:textColor="@color/navbar_button_color"
             android:textSize="14sp" />
 
@@ -60,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:text="Pengaturan"
+            android:text="Settings"
             android:textColor="@color/navbar_button_color"
             android:textSize="14sp" />
     </LinearLayout>
