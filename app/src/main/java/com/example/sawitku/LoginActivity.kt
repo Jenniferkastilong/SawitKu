@@ -1,4 +1,3 @@
-// 1. NAMA PAKET SUDAH DIPERBAIKI
 package com.example.sawitku
 
 import android.content.Intent
@@ -12,7 +11,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class LoginActivity : AppCompatActivity() {
 
-    // Variabel ini tidak akan error lagi setelah dependensi ditambahkan
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
 
@@ -28,6 +26,13 @@ class LoginActivity : AppCompatActivity() {
         val buttonLogin: Button = findViewById(R.id.button_submit_login)
 
         buttonLogin.setOnClickListener {
+            // 🚀 Langsung pindah ke HomeActivity tanpa login logic
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
+            finish()
+
+            /*
+            // =============== LOGIC ASLI LOGIN (DICOMMENT SEMENTARA) ===============
             val email = editTextEmail.text.toString().trim()
             val password = editTextPass.text.toString().trim()
 
@@ -47,18 +52,19 @@ class LoginActivity : AppCompatActivity() {
                                         val role = document.getString("role")
                                         Toast.makeText(this, "Login berhasil sebagai $role", Toast.LENGTH_SHORT).show()
 
-                                        // 2. PERBAIKAN: Ditambahkan komentar TODO agar blok 'if' tidak kosong
+                                        // ✅ Setelah login berhasil arahkan ke HomeActivity
+                                        val intent = Intent(this, HomeActivity::class.java)
+                                        intent.putExtra("ROLE", role) // opsional: passing role
+                                        startActivity(intent)
+                                        finish()
+
+                                        /*
                                         if (role == "Petani") {
                                             // TODO: Arahkan ke Dashboard Petani
-                                            // val intent = Intent(this, DashboardPetaniActivity::class.java)
-                                            // startActivity(intent)
-                                            // finish()
                                         } else if (role == "Konsultan") {
                                             // TODO: Arahkan ke Dashboard Konsultan
-                                            // val intent = Intent(this, DashboardKonsultanActivity::class.java)
-                                            // startActivity(intent)
-                                            // finish()
                                         }
+                                        */
                                     } else {
                                         Toast.makeText(this, "Data pengguna tidak ditemukan.", Toast.LENGTH_SHORT).show()
                                     }
@@ -71,6 +77,7 @@ class LoginActivity : AppCompatActivity() {
                         Toast.makeText(this, "Login Gagal: ${task.exception?.message}", Toast.LENGTH_LONG).show()
                     }
                 }
+            */
         }
     }
 }

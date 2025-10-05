@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="fragmentContainer" type="id" />
+    <item name="main_container" type="id" />
+    <item name="home_container" type="id" />
+</resources>
