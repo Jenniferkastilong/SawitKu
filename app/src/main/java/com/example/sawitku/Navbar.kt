@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
+import com.example.petanisawit.Komunitas
+import com.example.petanisawit.LaporanLahan
 
 class Navbar : Fragment() {
 
@@ -17,10 +19,11 @@ class Navbar : Fragment() {
         val view = inflater.inflate(R.layout.fragment_navbar, container, false)
 
         val btnHome = view.findViewById<Button>(R.id.btnHome)
-        val btnProfile = view.findViewById<Button>(R.id.btnProfile)
+        val btnLahan = view.findViewById<Button>(R.id.btnLahan)
+        val btnKomunitas = view.findViewById<Button>(R.id.btnKomunitas)
         val btnSetting = view.findViewById<Button>(R.id.btnSetting)
 
-        val buttons = listOf(btnHome, btnProfile, btnSetting)
+        val buttons = listOf(btnHome, btnLahan, btnKomunitas, btnSetting)
 
         fun setActiveButton(activeButton: Button) {
             buttons.forEach { it.isSelected = (it == activeButton) }
@@ -41,11 +44,18 @@ class Navbar : Fragment() {
             setActiveButton(btnHome)
         }
 
-        btnProfile.setOnClickListener {
+        btnLahan.setOnClickListener {
             childFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, Profile())
+                .replace(R.id.fragmentContainer, LaporanLahan())
                 .commit()
-            setActiveButton(btnProfile)
+            setActiveButton(btnLahan)
+        }
+
+        btnKomunitas.setOnClickListener {
+            childFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, Komunitas())
+                .commit()
+            setActiveButton(btnKomunitas)
         }
 
         btnSetting.setOnClickListener {

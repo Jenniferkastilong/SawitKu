@@ -45,8 +45,7 @@ class RegisterActivity : AppCompatActivity() {
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
                         val firebaseUser = auth.currentUser
-                        val uid = firebaseUser?.uid
-
+                        val uid = auth.currentUser?.uid
                         if (uid != null) {
                             val userMap = hashMapOf(
                                 "email" to email,
@@ -57,15 +56,16 @@ class RegisterActivity : AppCompatActivity() {
                                 .set(userMap)
                                 .addOnSuccessListener {
                                     Toast.makeText(this, "Registrasi berhasil!", Toast.LENGTH_SHORT).show()
-                                    // TODO: Arahkan ke halaman utama aplikasi setelah registrasi
-                                    // val intent = Intent(this, MainActivity::class.java)
-                                    // startActivity(intent)
-                                    // finish()
+                                    // Arahkan ke halaman login atau main activity
+                                    val intent = Intent(this, LoginActivity::class.java)
+                                    startActivity(intent)
+                                    finish()
                                 }
                                 .addOnFailureListener { e ->
                                     Toast.makeText(this, "Gagal menyimpan data: ${e.message}", Toast.LENGTH_SHORT).show()
                                 }
                         }
+
                     } else {
                         Toast.makeText(this, "Registrasi gagal: ${task.exception?.message}", Toast.LENGTH_LONG).show()
                     }

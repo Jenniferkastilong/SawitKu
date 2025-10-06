@@ -1,3 +1,4 @@
+// 1. NAMA PAKET SUDAH DIPERBAIKI
 package com.example.sawitku
 
 import android.content.Intent
@@ -26,13 +27,6 @@ class LoginActivity : AppCompatActivity() {
         val buttonLogin: Button = findViewById(R.id.button_submit_login)
 
         buttonLogin.setOnClickListener {
-            // 🚀 Langsung pindah ke HomeActivity tanpa login logic
-            val intent = Intent(this, HomeActivity::class.java)
-            startActivity(intent)
-            finish()
-
-            /*
-            // =============== LOGIC ASLI LOGIN (DICOMMENT SEMENTARA) ===============
             val email = editTextEmail.text.toString().trim()
             val password = editTextPass.text.toString().trim()
 
@@ -50,21 +44,28 @@ class LoginActivity : AppCompatActivity() {
                                 .addOnSuccessListener { document ->
                                     if (document != null && document.exists()) {
                                         val role = document.getString("role")
-                                        Toast.makeText(this, "Login berhasil sebagai $role", Toast.LENGTH_SHORT).show()
+                                        if (role != null) {
+                                            Toast.makeText(this, "Login berhasil sebagai $role", Toast.LENGTH_SHORT).show()
 
-                                        // ✅ Setelah login berhasil arahkan ke HomeActivity
-                                        val intent = Intent(this, HomeActivity::class.java)
-                                        intent.putExtra("ROLE", role) // opsional: passing role
-                                        startActivity(intent)
-                                        finish()
-
-                                        /*
-                                        if (role == "Petani") {
-                                            // TODO: Arahkan ke Dashboard Petani
-                                        } else if (role == "Konsultan") {
-                                            // TODO: Arahkan ke Dashboard Konsultan
+                                            // Redirect sesuai role
+                                            when (role) {
+                                                "Petani" -> {
+                                                    val intent = Intent(this, DashboardPetaniActivity::class.java)
+                                                    startActivity(intent)
+                                                    finish()
+                                                }
+                                                "Konsultan" -> {
+                                                    val intent = Intent(this, DashboardKonsultanActivity::class.java)
+                                                    startActivity(intent)
+                                                    finish()
+                                                }
+                                                else -> {
+                                                    Toast.makeText(this, "Role tidak dikenali", Toast.LENGTH_SHORT).show()
+                                                }
+                                            }
+                                        } else {
+                                            Toast.makeText(this, "Role pengguna tidak ditemukan", Toast.LENGTH_SHORT).show()
                                         }
-                                        */
                                     } else {
                                         Toast.makeText(this, "Data pengguna tidak ditemukan.", Toast.LENGTH_SHORT).show()
                                     }
@@ -77,7 +78,6 @@ class LoginActivity : AppCompatActivity() {
                         Toast.makeText(this, "Login Gagal: ${task.exception?.message}", Toast.LENGTH_LONG).show()
                     }
                 }
-            */
         }
     }
 }

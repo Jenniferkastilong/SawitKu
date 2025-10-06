@@ -17,14 +17,14 @@
         <!-- Card pengguna -->
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="97dp"
-            android:background="@color/purple_500">
+            android:layout_height="wrap_content"
+            >
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|start"
-                android:layout_margin="20dp"
+                android:layout_margin="16dp"
                 android:text="Profil"
                 android:textColor="@android:color/black"
                 android:textSize="22sp"
