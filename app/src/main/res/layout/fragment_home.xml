@@ -9,13 +9,18 @@
     android:padding="16dp">
 
     <!-- Header -->
+
+    <!-- Card: Total Lahan -->
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="10dp"
         android:background="@null"
-        tools:ignore="ExtraText">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ExtraText"
+        tools:layout_editor_absoluteX="16dp">
 
         <TextView
             android:id="@+id/tv_wilayah_label"
@@ -47,12 +52,11 @@
             android:src="@mipmap/ic_launcher"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-<!--            app:shapeAppearanceOverlay="@style/CircleImageStyle" -->
+        <!--            app:shapeAppearanceOverlay="@style/CircleImageStyle" -->
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Card: Total Lahan -->
     <androidx.cardview.widget.CardView
         android:id="@+id/card_total_lahan"
         android:layout_width="177dp"

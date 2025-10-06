@@ -1,46 +1,67 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white90"
+    android:fitsSystemWindows="true">
 
-    <!-- tempat fragment -->
+    <!-- Tempat fragment -->
     <FrameLayout
-        android:id="@+id/fragment_container"
+        android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/navbar" />
 
-    <!-- navbar -->
+    <!-- Navbar di bawah -->
     <LinearLayout
         android:id="@+id/navbar"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="@color/white90"
+        android:background="@color/white"
         android:orientation="horizontal"
         android:gravity="center"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:elevation="8dp"
+        android:padding="8dp">
 
         <Button
             android:id="@+id/btnHome"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="@android:color/transparent"
             android:text="Beranda"
-            android:textColor="#FF9800" />
+            android:textColor="@color/navbar_button_color"
+            android:textSize="14sp" />
 
         <Button
-            android:id="@+id/btnProfile"
-            android:layout_width="wrap_content"
+            android:id="@+id/btnLahan"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:text="Profil"
-            android:textColor="#FF9800" />
+            android:text="Laporan Lahan"
+            android:textColor="@color/navbar_button_color"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/btnKomunitas"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:text="Komunitas"
+            android:textColor="@color/navbar_button_color"
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/btnSetting"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="@android:color/transparent"
             android:text="Pengaturan"
-            android:textColor="#FF9800" />
+            android:textColor="@color/navbar_button_color"
+            android:textSize="14sp" />
     </LinearLayout>
 </RelativeLayout>
