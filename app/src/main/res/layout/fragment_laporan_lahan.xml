@@ -65,7 +65,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Ambil GPS"/>
+                android:text="Ambil GPS"
+                android:backgroundTint="#D6E7C6"
+                android:textColor="#000000"/>
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>

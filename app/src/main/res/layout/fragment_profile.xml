@@ -32,6 +32,7 @@
         </FrameLayout>
 
         <androidx.cardview.widget.CardView
+            android:backgroundTint="#D6E7C6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -86,8 +87,10 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
+
         <!-- Card Data Pribadi -->
         <androidx.cardview.widget.CardView
+            android:backgroundTint="#D6E7C6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -103,10 +106,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
                     android:text="Data Pribadi"
-                    android:textStyle="bold"
                     android:textSize="16sp"
-                    android:layout_marginBottom="8dp" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/text_phone"

@@ -41,8 +41,8 @@
             android:id="@+id/radio_petani"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Petani"
-            android:checked="true"/>
+            android:checked="true"
+            android:text="Petani" />
 
         <RadioButton
             android:id="@+id/radio_konsultan"
@@ -57,6 +57,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="Register" />
+        android:text="Register"
+        android:backgroundTint="#D6E7C6"
+        android:textColor="#000000"/>
 
 </LinearLayout>
