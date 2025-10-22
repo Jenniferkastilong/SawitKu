@@ -33,11 +33,14 @@ object SharedData {
         val role: String,
         val fotoUrl: String = "",
         var aktif: Boolean = true,
+        var profileCompleted: Boolean = true
     )
 
     val laporanList = mutableListOf<Laporan>()
     val laporanKonsultan = mutableListOf<Laporan>()
     val userList = mutableListOf<User>()
+    val laporanAdmin = mutableListOf<Laporan>()
+
 
     fun initDummyData() {
         if (userList.isEmpty()) {

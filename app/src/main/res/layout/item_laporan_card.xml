@@ -79,15 +79,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:stateListAnimator="@null"/>
-
-            <Button
-                android:id="@+id/btnVerify"
-                android:text="Verifikasi"
-                android:backgroundTint="@color/orange"
-                android:textColor="@color/white"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:stateListAnimator="@null"/>
         </LinearLayout>
 
         <!-- Tombol tambahan -->
@@ -119,13 +110,22 @@
                 android:stateListAnimator="@null"/>
 
             <Button
-                android:id="@+id/btnDownloadFoto"
-                android:text="Download Foto"
+                android:id="@+id/btnVerify"
+                android:text="Verifikasi"
                 android:backgroundTint="@color/lorange"
                 android:textColor="@color/black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:stateListAnimator="@null"/>
+
+<!--            <Button-->
+<!--                android:id="@+id/btnDownloadFoto"-->
+<!--                android:text="Download Foto"-->
+<!--                android:backgroundTint="@color/lorange"-->
+<!--                android:textColor="@color/black"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:stateListAnimator="@null"/>-->
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

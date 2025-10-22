@@ -15,9 +15,9 @@ import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
-import com.example.sawitku.ui.berita.BeritaActivity
-import com.example.sawitku.ui.harga.HargaActivity
+import com.example.sawitku.ui.news.BeritaActivity
 import com.example.sawitku.ui.kalkulator.KalkulatorActivity
+import com.example.sawitku.ui.news.HargaActivity
 import com.example.sawitku.ui.profile.Profile
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -203,11 +203,11 @@ class Home : Fragment() {
             startActivity(intent)
         }
 
-        btnKonsultasi.setOnClickListener {
-            if (!isAdded) return@setOnClickListener
-            val intent = Intent(requireContext(), KonsultasiActivity::class.java)
-            startActivity(intent)
-        }
+//        btnKonsultasi.setOnClickListener {
+//            if (!isAdded) return@setOnClickListener
+//            val intent = Intent(requireContext(), KonsultasiActivity::class.java)
+//            startActivity(intent)
+//        }
 
         btnKalkulator.setOnClickListener {
             if (!isAdded) return@setOnClickListener

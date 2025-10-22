@@ -17,6 +17,8 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
@@ -37,23 +39,7 @@ class LaporanLahan : Fragment(), OnMapReadyCallback {
     private var selectedLatLng: LatLng? = null
     private var savedPhotoPath: String? = null
 
-    private val takePhoto =
-        registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bmp: Bitmap? ->
-            bmp?.let {
-                ivFoto.setImageBitmap(it)
-                saveBitmapToCache(it)
-            }
-        }
-
-    private val requestCameraPermission =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-            if (granted) takePhoto.launch(null)
-            else Toast.makeText(requireContext(), "Izin kamera ditolak", Toast.LENGTH_SHORT).show()
-        }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val v = inflater.inflate(R.layout.fragment_laporan_lahan, container, false)
 
         etNamaKebun = v.findViewById(R.id.etNamaKebun)
@@ -79,10 +65,20 @@ class LaporanLahan : Fragment(), OnMapReadyCallback {
         return v
     }
 
+    private val takePhoto = registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bmp: Bitmap? ->
+        bmp?.let {
+            ivFoto.setImageBitmap(it)
+            saveBitmapToCache(it)
+        }
+    }
+
+    private val requestCameraPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        if (granted) takePhoto.launch(null)
+        else Toast.makeText(requireContext(), "Izin kamera ditolak", Toast.LENGTH_SHORT).show()
+    }
+
     private fun requestLocationPermission() {
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED
-        ) {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 200)
         } else {
             googleMap?.let { map ->
@@ -92,11 +88,7 @@ class LaporanLahan : Fragment(), OnMapReadyCallback {
                     map.clear()
                     map.addMarker(com.google.android.gms.maps.model.MarkerOptions().position(latLng))
                     map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
-                    Toast.makeText(
-                        requireContext(),
-                        "Lokasi dipilih: ${latLng.latitude}, ${latLng.longitude}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(requireContext(), "Lokasi dipilih: ${latLng.latitude}, ${latLng.longitude}", Toast.LENGTH_SHORT).show()
                 }
                 Toast.makeText(requireContext(), "Klik pada peta untuk memilih lokasi", Toast.LENGTH_SHORT).show()
             }
@@ -106,10 +98,7 @@ class LaporanLahan : Fragment(), OnMapReadyCallback {
     private fun saveBitmapToCache(bmp: Bitmap) {
         try {
             val file = File(requireContext().cacheDir, "photo_${System.currentTimeMillis()}.jpg")
-            val fos = FileOutputStream(file)
-            bmp.compress(Bitmap.CompressFormat.JPEG, 85, fos)
-            fos.flush()
-            fos.close()
+            FileOutputStream(file).use { fos -> bmp.compress(Bitmap.CompressFormat.JPEG, 85, fos) }
             savedPhotoPath = file.absolutePath
         } catch (e: Exception) {
             Toast.makeText(requireContext(), "Gagal simpan foto: ${e.message}", Toast.LENGTH_SHORT).show()
@@ -122,35 +111,75 @@ class LaporanLahan : Fragment(), OnMapReadyCallback {
         val lokasi = selectedLatLng?.let { SharedData.Lokasi(it.latitude, it.longitude) }
 
         if (namaK.isEmpty() || luasDouble == null || lokasi == null) {
-            Toast.makeText(
-                requireContext(),
-                "Isi nama kebun, luas, dan pilih lokasi terlebih dahulu.",
-                Toast.LENGTH_SHORT
-            ).show()
+            Toast.makeText(requireContext(), "Isi nama kebun, luas, dan pilih lokasi terlebih dahulu.", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val tanggal = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date())
-        val currentUser = SharedData.userList.firstOrNull { it.role == "petani" } ?: run {
-            Toast.makeText(requireContext(), "User tidak ditemukan", Toast.LENGTH_SHORT).show()
+        val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
+        if (currentUserUid == null) {
+            Toast.makeText(requireContext(), "User belum login", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val laporanBaru = SharedData.Laporan(
-            uidPetani = currentUser.uid,
-            namaPetani = currentUser.nama,
-            namaKebun = namaK,
-            luas = luasDouble,
-            tanggal = tanggal,
-            lokasi = lokasi,
-            fotoPath = savedPhotoPath
-        )
+        FirebaseFirestore.getInstance().collection("users").document(currentUserUid)
+            .get()
+            .addOnSuccessListener { doc ->
+                if (!doc.exists()) {
+                    Toast.makeText(requireContext(), "User tidak ditemukan di database", Toast.LENGTH_SHORT).show()
+                    return@addOnSuccessListener
+                }
 
-        SharedData.laporanList.add(laporanBaru)
-        adapter.notifyItemInserted(SharedData.laporanList.size - 1)
-        resetForm()
-        Toast.makeText(requireContext(), "Laporan tersimpan!", Toast.LENGTH_SHORT).show()
+                val user = SharedData.User(
+                    uid = currentUserUid,
+                    username = doc.getString("email") ?: "",
+                    nama = doc.getString("nama") ?: doc.getString("email") ?: "",
+                    role = doc.getString("role") ?: "",
+                    aktif = doc.getBoolean("aktif") ?: true
+                )
+
+                val tanggal = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date())
+                val laporanBaru = SharedData.Laporan(
+                    uidPetani = user.uid,
+                    namaPetani = user.nama,
+                    namaKebun = namaK,
+                    luas = luasDouble,
+                    tanggal = tanggal,
+                    lokasi = lokasi,
+                    fotoPath = savedPhotoPath,
+                    status = "Pending",
+                    verified = false
+                )
+
+                // =========================================
+                // Masuk ke riwayat laporan petani
+                SharedData.laporanList.add(0, laporanBaru)
+                adapter.notifyItemInserted(0)
+
+                // Masuk ke dashboard konsultan
+                SharedData.laporanKonsultan.add(0, laporanBaru)
+
+                // Reset form
+                resetForm()
+                Toast.makeText(requireContext(), "Laporan tersimpan dan dikirim ke konsultan!", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                Toast.makeText(requireContext(), "Gagal ambil data user: ${it.message}", Toast.LENGTH_SHORT).show()
+            }
     }
+
+    // ================= Fungsi verifikasi konsultan =================
+    fun verifyByKonsultan(laporan: SharedData.Laporan, position: Int) {
+        laporan.verified = true
+        laporan.status = "Terverifikasi"
+
+        // Masuk ke dashboard admin setelah diverifikasi
+        SharedData.laporanAdmin.add(0, laporan)
+
+        // Update RecyclerView konsultan
+        adapter.notifyItemChanged(position)
+        Toast.makeText(requireContext(), "${laporan.namaKebun} diverifikasi dan dikirim ke admin", Toast.LENGTH_SHORT).show()
+    }
+
 
     private fun resetForm() {
         etNamaKebun.text.clear()
@@ -161,15 +190,11 @@ class LaporanLahan : Fragment(), OnMapReadyCallback {
         googleMap?.clear()
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<out String>, grantResults: IntArray
-    ) {
-        if (requestCode == 200) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                requestLocationPermission()
-            } else {
-                Toast.makeText(requireContext(), "Izin lokasi ditolak", Toast.LENGTH_SHORT).show()
-            }
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        if (requestCode == 200 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            requestLocationPermission()
+        } else {
+            Toast.makeText(requireContext(), "Izin lokasi ditolak", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -198,8 +223,7 @@ class LaporanLahan : Fragment(), OnMapReadyCallback {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
-            val v = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_laporan_user, parent, false)
+            val v = LayoutInflater.from(parent.context).inflate(R.layout.item_laporan_user, parent, false)
             return VH(v)
         }
 
@@ -224,10 +248,7 @@ class LaporanLahan : Fragment(), OnMapReadyCallback {
                 holder.btnHapusLaporan.visibility = View.GONE
             }
 
-            // Edit
             holder.btnEditLaporan.setOnClickListener { showEditDialog(laporan, position) }
-
-            // Hapus
             holder.btnHapusLaporan.setOnClickListener {
                 SharedData.laporanList.remove(laporan)
                 items.removeAt(position)
@@ -240,31 +261,24 @@ class LaporanLahan : Fragment(), OnMapReadyCallback {
     }
 
     private fun showEditDialog(laporan: SharedData.Laporan, position: Int) {
-        val dialogView = LayoutInflater.from(requireContext())
-            .inflate(R.layout.dialog_edit_laporan, null)
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_edit_laporan, null)
         val etNama = dialogView.findViewById<EditText>(R.id.etNamaKebunDialog)
         val etLuas = dialogView.findViewById<EditText>(R.id.etLuasDialog)
 
         etNama.setText(laporan.namaKebun)
         etLuas.setText(laporan.luas.toString())
 
-        val dialog = android.app.AlertDialog.Builder(requireContext())
+        android.app.AlertDialog.Builder(requireContext())
             .setTitle("Edit Laporan")
             .setView(dialogView)
             .setPositiveButton("Simpan") { _, _ ->
-                val namaBaru = etNama.text.toString().trim()
-                val luasBaru = etLuas.text.toString().toDoubleOrNull() ?: laporan.luas
-
-                // Update SharedData
-                laporan.namaKebun = namaBaru
-                laporan.luas = luasBaru
+                laporan.namaKebun = etNama.text.toString().trim()
+                laporan.luas = etLuas.text.toString().toDoubleOrNull() ?: laporan.luas
                 SharedData.laporanList[position] = laporan
-
                 adapter.notifyItemChanged(position)
                 Toast.makeText(requireContext(), "Laporan diperbarui", Toast.LENGTH_SHORT).show()
             }
             .setNegativeButton("Batal", null)
-            .create()
-        dialog.show()
+            .show()
     }
 }

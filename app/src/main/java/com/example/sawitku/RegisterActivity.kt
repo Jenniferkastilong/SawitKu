@@ -44,11 +44,11 @@ class RegisterActivity : AppCompatActivity() {
 
                         val userMap = hashMapOf(
                             "uid" to uid,
-                            "nama" to email, // fallback nama = email
                             "email" to email,
                             "role" to role,
+                            "nama" to email, // default nama sama dengan email
                             "aktif" to true,
-                            "profileCompleted" to false
+                            "profileCompleted" to if (role=="petani") false else true // petani harus setup
                         )
 
                         db.collection("users").document(uid)
@@ -60,7 +60,7 @@ class RegisterActivity : AppCompatActivity() {
                                 finish()
                             }
                             .addOnFailureListener { e ->
-                                Toast.makeText(this, "Data tersimpan sebagian: ${e.message}", Toast.LENGTH_LONG).show()
+                                Toast.makeText(this, "Gagal simpan data: ${e.message}", Toast.LENGTH_LONG).show()
                                 auth.signOut()
                                 startActivity(Intent(this, LoginActivity::class.java))
                                 finish()

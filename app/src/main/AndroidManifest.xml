@@ -24,11 +24,13 @@
             android:name=".ui.kalkulator.KalkulatorActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.harga.HargaActivity"
+            android:name=".ui.news.HargaActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.berita.BeritaActivity"
+            android:name=".ui.news.BeritaActivity"
             android:exported="false" />
+        <activity android:name=".BeritaDetailActivity" />
+
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

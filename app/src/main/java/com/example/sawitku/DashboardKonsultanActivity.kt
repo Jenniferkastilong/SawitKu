@@ -149,6 +149,7 @@ class DashboardKonsultanActivity : AppCompatActivity() {
 
                 SharedData.laporanKonsultan.remove(laporan)
                 SharedData.laporanList.add(0, laporan)
+                SharedData.laporanAdmin.add(0, laporan)
 
                 notifyItemRemoved(position)
                 Toast.makeText(

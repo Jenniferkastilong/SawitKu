@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.sawitku.MainActivity
 import com.example.sawitku.R
@@ -29,7 +28,6 @@ class Profile : Fragment() {
     private lateinit var btnSimpan: Button
     private lateinit var btnLogout: Button
     private lateinit var btnDeleteAccount: Button
-    private lateinit var rvHistory: RecyclerView
 
     private val auth = FirebaseAuth.getInstance()
     private val firestore = FirebaseFirestore.getInstance()
@@ -55,20 +53,20 @@ class Profile : Fragment() {
         btnEdit = view.findViewById(R.id.btn_edit_profile)
         btnLogout = view.findViewById(R.id.btn_logout)
         btnDeleteAccount = view.findViewById(R.id.btn_delete_account)
-//        rvHistory = view.findViewById(R.id.rv_history)
 
+        // Tambahkan tombol simpan secara dinamis
         btnSimpan = Button(requireContext()).apply {
             text = "Simpan"
             visibility = View.GONE
             setBackgroundColor(resources.getColor(R.color.dgreen))
             setTextColor(resources.getColor(R.color.white))
         }
-
         val mainLayout = view.findViewById<LinearLayout>(R.id.mainLayout)
         mainLayout.addView(btnSimpan)
 
         loadUserData()
 
+        // Pilih foto profil
         ivProfile.setOnClickListener {
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "image/*"
@@ -85,7 +83,7 @@ class Profile : Fragment() {
         }
 
         btnLogout.setOnClickListener {
-            FirebaseAuth.getInstance().signOut()
+            auth.signOut()
             Toast.makeText(requireContext(), "Logout berhasil", Toast.LENGTH_SHORT).show()
             val intent = Intent(requireContext(), MainActivity::class.java)
             startActivity(intent)
@@ -93,7 +91,7 @@ class Profile : Fragment() {
         }
 
         btnDeleteAccount.setOnClickListener {
-            val user = FirebaseAuth.getInstance().currentUser
+            val user = auth.currentUser
             user?.delete()?.addOnSuccessListener {
                 firestore.collection("users").document(user.uid).delete()
                 Toast.makeText(requireContext(), "Akun dihapus", Toast.LENGTH_SHORT).show()
@@ -110,12 +108,14 @@ class Profile : Fragment() {
 
     private fun loadUserData() {
         val uid = auth.currentUser?.uid ?: return
+        val userEmail = auth.currentUser?.email ?: "-"
+
         firestore.collection("users").document(uid)
             .get()
             .addOnSuccessListener { doc ->
                 if (doc != null && doc.exists()) {
                     textNama.text = doc.getString("nama") ?: "-"
-                    textMail.text = "Email : ${doc.getString("email") ?: "-"}"
+                    textMail.text = "Email : $userEmail"
                     textPhone.text = "No. HP : ${doc.getString("no_hp") ?: "-"}"
                     textWilayah.text = "Wilayah : ${doc.getString("wilayahId") ?: "-"}"
                     textRole.text = "Peran: ${doc.getString("role") ?: "-"}"
@@ -124,8 +124,8 @@ class Profile : Fragment() {
                     if (!photoUrl.isNullOrEmpty()) {
                         Glide.with(this)
                             .load(photoUrl)
-                            .placeholder(R.drawable.ic_person) // ✅ fix
-                            .error(R.drawable.ic_person)       // ✅ fix
+                            .placeholder(R.drawable.ic_person)
+                            .error(R.drawable.ic_person)
                             .into(ivProfile)
                     } else {
                         ivProfile.setImageResource(R.drawable.ic_person)
@@ -142,13 +142,11 @@ class Profile : Fragment() {
         val uid = auth.currentUser?.uid ?: return
 
         val namaBaru = (textNama as? EditText)?.text?.toString() ?: textNama.text.toString()
-        val emailBaru = (textMail as? EditText)?.text?.toString() ?: textMail.text.toString()
         val phoneBaru = (textPhone as? EditText)?.text?.toString() ?: textPhone.text.toString()
         val wilayahBaru = (textWilayah as? EditText)?.text?.toString() ?: textWilayah.text.toString()
 
         val data = mapOf(
             "nama" to namaBaru,
-            "email" to emailBaru.replace("Email : ", ""),
             "no_hp" to phoneBaru.replace("No. HP : ", ""),
             "wilayahId" to wilayahBaru.replace("Wilayah : ", "")
         )
@@ -193,9 +191,9 @@ class Profile : Fragment() {
             btnSimpan.visibility = View.VISIBLE
 
             textNama = convertToEditText(textNama)
-            textMail = convertToEditText(textMail)
             textPhone = convertToEditText(textPhone)
             textWilayah = convertToEditText(textWilayah)
+            // email tetap read-only
 
             btnEdit.isEnabled = false
         } else {
@@ -211,9 +209,7 @@ class Profile : Fragment() {
         parent.removeView(tv)
 
         val et = EditText(requireContext()).apply {
-            setText(tv.text.toString().replace("Email : ", "")
-                .replace("No. HP : ", "")
-                .replace("Wilayah : ", ""))
+            setText(tv.text.toString().replace("No. HP : ", "").replace("Wilayah : ", ""))
             textSize = 16f
             setPadding(10, 5, 10, 5)
             setTextColor(resources.getColor(R.color.black))

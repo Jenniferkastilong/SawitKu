@@ -3,10 +3,7 @@ package com.example.sawitku
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -38,49 +35,71 @@ class LoginActivity : AppCompatActivity() {
 
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this) { task ->
-                    if (task.isSuccessful) {
-                        val uid = auth.currentUser?.uid ?: return@addOnCompleteListener
+                    if (!task.isSuccessful) {
+                        Toast.makeText(
+                            this,
+                            "Login gagal: ${task.exception?.message}",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        return@addOnCompleteListener
+                    }
 
-                        db.collection("users").document(uid).get()
-                            .addOnSuccessListener { doc ->
-                                if (!doc.exists()) {
-                                    Toast.makeText(this, "Data user hilang, silakan registrasi ulang.", Toast.LENGTH_SHORT).show()
-                                    auth.signOut()
-                                    startActivity(Intent(this, RegisterActivity::class.java))
+                    val uid = auth.currentUser?.uid
+                    if (uid == null) {
+                        Toast.makeText(this, "User tidak ditemukan", Toast.LENGTH_SHORT).show()
+                        return@addOnCompleteListener
+                    }
+
+                    db.collection("users").document(uid).get()
+                        .addOnSuccessListener { doc ->
+                            if (!doc.exists()) {
+                                Toast.makeText(this, "Data user tidak ditemukan di database", Toast.LENGTH_SHORT).show()
+                                return@addOnSuccessListener
+                            }
+
+                            val role = doc.getString("role")?.lowercase() ?: ""
+                            val aktif = doc.getBoolean("aktif") ?: true
+
+                            if (!aktif) {
+                                Toast.makeText(
+                                    this,
+                                    "Akun Anda dinonaktifkan. Hubungi admin.",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                                auth.signOut()
+                                return@addOnSuccessListener
+                            }
+
+                            // Cek khusus role petani
+                            if (role == "petani") {
+                                val profileComplete = doc.getBoolean("profileComplete") ?: false
+                                if (!profileComplete) {
+                                    // Petani pertama kali login → setup profil
+                                    startActivity(Intent(this, SetupProfileActivity::class.java))
+                                    finish()
+                                    return@addOnSuccessListener
+                                } else {
+                                    startActivity(Intent(this, HomeActivity::class.java))
                                     finish()
                                     return@addOnSuccessListener
                                 }
-
-                                val role = doc.getString("role") ?: ""
-                                val profileCompleted = doc.getBoolean("profileCompleted") ?: false
-                                val aktif = doc.getBoolean("aktif") ?: true
-
-                                if (!aktif) {
-                                    Toast.makeText(this, "Akun Anda dinonaktifkan. Hubungi admin.", Toast.LENGTH_LONG).show()
-                                    auth.signOut()
-                                    return@addOnSuccessListener
-                                }
-
-                                when (role.lowercase()) {
-                                    "petani" -> {
-                                        if (!profileCompleted) {
-                                            startActivity(Intent(this, SetupProfileActivity::class.java))
-                                        } else {
-                                            startActivity(Intent(this, HomeActivity::class.java))
-                                        }
-                                    }
-                                    "pengurus" -> startActivity(Intent(this, DashboardKonsultanActivity::class.java))
-                                    "admin" -> startActivity(Intent(this, DashboardAdminActivity::class.java))
-                                    else -> Toast.makeText(this, "Role tidak ditemukan.", Toast.LENGTH_SHORT).show()
-                                }
-                                finish()
                             }
-                            .addOnFailureListener {
-                                Toast.makeText(this, "Gagal ambil data: ${it.message}", Toast.LENGTH_LONG).show()
+
+                            // Role pengurus atau admin langsung ke dashboard
+                            when (role) {
+                                "pengurus" -> startActivity(Intent(this, DashboardKonsultanActivity::class.java))
+                                "admin" -> startActivity(Intent(this, DashboardAdminActivity::class.java))
+                                else -> Toast.makeText(this, "Role tidak ditemukan.", Toast.LENGTH_SHORT).show()
                             }
-                    } else {
-                        Toast.makeText(this, "Login gagal: ${task.exception?.message}", Toast.LENGTH_LONG).show()
-                    }
+                            finish()
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(
+                                this,
+                                "Gagal ambil data: ${it.message}",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
                 }
         }
 
