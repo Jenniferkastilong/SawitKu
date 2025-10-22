@@ -1,62 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:padding="24dp"
+    android:fillViewport="true"
+    android:background="@color/white"
     tools:context=".RegisterActivity">
 
-    <EditText
-        android:id="@+id/edit_text_email"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Email"
-        android:inputType="textEmailAddress" />
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="24dp">
 
-    <EditText
-        android:id="@+id/edit_text_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:hint="Password"
-        android:inputType="textPassword" />
+        <!-- Logo Aplikasi -->
+        <ImageView
+            android:id="@+id/register_logo"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/ic_launcher_foreground"
+            android:contentDescription="Logo Aplikasi"
+            android:layout_marginTop="24dp"
+            android:layout_gravity="center" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Daftar Sebagai:" />
-
-    <RadioGroup
-        android:id="@+id/radio_group_role"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginTop="8dp">
-
-        <RadioButton
-            android:id="@+id/radio_petani"
+        <!-- Judul Halaman -->
+        <TextView
+            android:id="@+id/register_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Petani"
-            android:checked="true"/>
+            android:text="Buat Akun Baru"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/black" />
 
-        <RadioButton
-            android:id="@+id/radio_konsultan"
+        <!-- Field Email -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_register_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            app:startIconDrawable="@drawable/ic_email"
+            app:boxStrokeColor="@color/green">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Email"
+                android:inputType="textEmailAddress" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Field Password -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_register_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:startIconDrawable="@drawable/ic_lock"
+            app:endIconMode="password_toggle"
+            app:boxStrokeColor="@color/green">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Password"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Role Selection -->
+        <TextView
+            android:id="@+id/text_role_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:text="Konsultan" />
-    </RadioGroup>
+            android:text="Daftar Sebagai:"
+            android:layout_marginTop="24dp"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/black" />
 
-    <Button
-        android:id="@+id/button_submit_register"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="Register" />
+        <RadioGroup
+            android:id="@+id/radioGroupRole"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="8dp">
 
-</LinearLayout>
+            <RadioButton
+                android:id="@+id/radio_petani"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Petani"
+                android:tag="petani"
+                android:checked="true"
+                android:textColor="@color/black" />
+
+            <RadioButton
+                android:id="@+id/radio_pengurus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pengurus"
+                android:tag="pengurus"
+                android:layout_marginStart="24dp"
+                android:textColor="@color/black" />
+
+            <RadioButton
+                android:id="@+id/radio_admin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Admin"
+                android:tag="admin"
+                android:layout_marginStart="24dp"
+                android:textColor="@color/black" />
+        </RadioGroup>
+
+        <!-- Tombol Register -->
+        <Button
+            android:id="@+id/buttonSubmitRegister"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Daftar Sekarang"
+            android:layout_marginTop="32dp"
+            android:backgroundTint="@color/orange"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+
+        <!-- Tombol ke Halaman Login -->
+        <TextView
+            android:id="@+id/text_login_redirect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sudah punya akun? Masuk di sini"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/orange"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+</ScrollView>

@@ -6,8 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
-import com.example.petanisawit.Komunitas
-import com.example.petanisawit.LaporanLahan
+import com.example.sawitku.ui.komunitas.Komunitas
 
 class Navbar : Fragment() {
 

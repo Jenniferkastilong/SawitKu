@@ -21,4 +21,6 @@
     <string name="akun">Akun</string>
     <string name="title_activity_dashboard_petani">activity_dashboard_petani</string>
     <string name="title_activity_dashboard_konsultan">DashboardKonsultanActivity</string>
+    <string name="openweather_api_key">deb4b6298cf64cf28c88e7c64fdd84d0</string>
+
 </resources>

@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.sawitku">
+    package="com.example.sawitku" >
+    <!-- Permission penting -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission
+        android:name="android.permission.CAMERA"
+        tools:ignore="PermissionImpliesUnsupportedChromeOsHardware" />
 
     <application
         android:allowBackup="true"
@@ -10,24 +19,62 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SawitKu"
-        tools:replace="android:theme,android:allowBackup">
+        tools:replace="android:theme,android:allowBackup" >
+        <activity
+            android:name=".ui.kalkulator.KalkulatorActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.harga.HargaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.berita.BeritaActivity"
+            android:exported="false" />
 
-        <!-- Activity awal -->
-        <activity android:name=".MainActivity"
-            android:exported="true">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAqufJAvLlahDCzhIjK_I2976Ps59t5MoY" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true" >
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider> <!-- Activity untuk setup profil -->
+        <activity
+            android:name=".SetupProfileActivity"
+            android:exported="false" /> <!-- Dashboard untuk Admin -->
+        <activity
+            android:name=".DashboardAdminActivity"
+            android:exported="false" /> <!-- Dashboard untuk Konsultan -->
+        <activity
+            android:name=".DashboardKonsultanActivity"
+            android:exported="false" /> <!-- Home Page (Dashboard untuk Petani) -->
+        <activity
+            android:name=".HomeActivity"
+            android:exported="false"
+            android:label="Beranda" /> <!-- Quick Button -->
+        <activity
+            android:name=".KonsultasiActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".RegisterActivity"
+            android:exported="false" /> <!-- MainActivity sebagai launcher (halaman pertama aplikasi) -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
-        <!-- Activity lain -->
-        <activity android:name=".LoginActivity" android:exported="false"/>
-        <activity android:name=".RegisterActivity" android:exported="false"/>
-        <activity android:name=".DashboardPetaniActivity" android:exported="false"/>
-        <activity android:name=".DashboardKonsultanActivity" android:exported="false"/>
-        <activity android:name=".HomeActivity" android:exported="false"/>
-
     </application>
+
 </manifest>

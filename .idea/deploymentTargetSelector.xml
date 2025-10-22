@@ -7,11 +7,11 @@
       </SelectionState>
       <SelectionState runConfigName="SawitKu">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-10-05T16:17:49.316291300Z">
+        <DropdownSelection timestamp="2025-10-15T20:12:03.453670500Z">
           <Target type="DEFAULT_BOOT">
-            <template>
-              <DeviceId pluginId="FirebaseDirectAccess" type="TEMPLATE" identifier="model_id=tokay/34" />
-            </template>
+            <handle>
+              <DeviceId pluginId="PhysicalDevice" identifier="serial=11541704AY005625" />
+            </handle>
           </Target>
         </DropdownSelection>
         <DialogSelection />

@@ -1,33 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/login_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
     android:padding="24dp"
-    tools:context=".LoginActivity">
+    android:gravity="center"
+    tools:context=".LoginActivity"
+    android:background="@color/white">
 
-    <EditText
-        android:id="@+id/edit_text_email_login"
+    <ImageView
+        android:id="@+id/login_logo"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:src="@drawable/ic_launcher_foreground"
+        android:layout_gravity="center"
+        android:contentDescription="Logo Aplikasi" />
+
+    <TextView
+        android:id="@+id/login_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Masuk ke Akun Anda"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginTop="24dp"
+        android:textColor="@color/black" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Email"
-        android:inputType="textEmailAddress" />
+        android:layout_marginTop="24dp"
+        app:boxStrokeColor="@color/green"
+        app:startIconDrawable="@drawable/ic_email">
 
-    <EditText
-        android:id="@+id/edit_text_password_login"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_text_email_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email"
+            android:inputType="textEmailAddress" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:hint="Password"
-        android:inputType="textPassword" />
+        android:layout_marginTop="12dp"
+        app:endIconMode="password_toggle"
+        app:startIconDrawable="@drawable/ic_lock">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_text_password_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Kata Sandi"
+            android:inputType="textPassword" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/text_forgot_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lupa Password?"
+        android:textColor="@color/orange"
+        android:textStyle="bold"
+        android:layout_marginTop="8dp"
+        android:layout_gravity="end" />
 
     <Button
         android:id="@+id/button_submit_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="Login" />
+        android:text="Masuk"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="@color/orange"
+        android:textColor="@android:color/white" />
 
 </LinearLayout>

@@ -10,7 +10,7 @@ class HomeActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.home_container, Navbar()) // Navbar Fragment
+                .replace(R.id.home_container, Navbar())
                 .commit()
         }
     }

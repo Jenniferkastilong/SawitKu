@@ -1,19 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_gradient"
+    android:padding="12dp">
 
-    <TextView
-        android:id="@+id/textViewPlaceholder"
+    <!-- RecyclerView untuk daftar post -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewPosts"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Loading..."
-        android:gravity="center"
-        android:textSize="18sp"/>
+        android:clipToPadding="false"
+        android:paddingBottom="88dp"
+        android:scrollbars="vertical"
+        android:overScrollMode="always" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewNews"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-</LinearLayout>
+    <!-- Tombol tambah post -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnAddPost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        android:contentDescription="Tambah Post"
+        android:src="@android:drawable/ic_input_add"
+        android:tint="@android:color/white"
+        android:backgroundTint="@color/orange"
+        app:elevation="8dp"
+        app:fabSize="normal"
+        app:pressedTranslationZ="12dp" />
+
+    <!-- Optional: placeholder kosong saat tidak ada post -->
+    <TextView
+        android:id="@+id/tvEmptyPlaceholder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Belum ada postingan"
+        android:textSize="16sp"
+        android:textColor="@android:color/white"
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
+
+</RelativeLayout>
