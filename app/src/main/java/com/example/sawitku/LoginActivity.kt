@@ -1,5 +1,6 @@
 package com.example.sawitku
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -50,6 +51,7 @@ class LoginActivity : AppCompatActivity() {
                         return@addOnCompleteListener
                     }
 
+                    // Ambil data user dari Firestore
                     db.collection("users").document(uid).get()
                         .addOnSuccessListener { doc ->
                             if (!doc.exists()) {
@@ -57,19 +59,34 @@ class LoginActivity : AppCompatActivity() {
                                 return@addOnSuccessListener
                             }
 
+                            // 1. Ambil data Role, Status Aktif, dan REGION (Wilayah)
+                            // Pastikan di database fieldnya bernama 'region' (atau 'wilayah', sesuaikan string-nya)
                             val role = doc.getString("role")?.lowercase() ?: ""
                             val aktif = doc.getBoolean("aktif") ?: true
+                            val region = doc.getString("region") ?: "" // Default kosong jika tidak ada
 
+                            // 2. Cek apakah akun dinonaktifkan (Fitur Hapus/Ban User)
                             if (!aktif) {
                                 Toast.makeText(
                                     this,
                                     "Akun Anda dinonaktifkan. Hubungi admin.",
                                     Toast.LENGTH_LONG
                                 ).show()
-                                auth.signOut()
+                                auth.signOut() // Logout paksa
                                 return@addOnSuccessListener
                             }
 
+                            // 3. SIMPAN WILAYAH KE SHAREDPREFERENCES (PENTING UNTUK FITUR 1)
+                            // Ini agar di halaman Admin/Pengurus nanti kita bisa filter data
+                            val sharedPref = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+                            with(sharedPref.edit()) {
+                                putString("user_region", region)
+                                putString("user_role", role)
+                                putString("user_uid", uid)
+                                apply()
+                            }
+
+                            // 4. Navigasi sesuai Role
                             // Cek khusus role petani
                             if (role == "petani") {
                                 val profileComplete = doc.getBoolean("profileComplete") ?: false
@@ -77,19 +94,23 @@ class LoginActivity : AppCompatActivity() {
                                     // Petani pertama kali login → setup profil
                                     startActivity(Intent(this, SetupProfileActivity::class.java))
                                     finish()
-                                    return@addOnSuccessListener
                                 } else {
                                     startActivity(Intent(this, HomeActivity::class.java))
                                     finish()
-                                    return@addOnSuccessListener
                                 }
+                                return@addOnSuccessListener
                             }
 
                             // Role pengurus atau admin langsung ke dashboard
                             when (role) {
-                                "pengurus" -> startActivity(Intent(this, DashboardKonsultanActivity::class.java))
-                                "admin" -> startActivity(Intent(this, DashboardAdminActivity::class.java))
-                                else -> Toast.makeText(this, "Role tidak ditemukan.", Toast.LENGTH_SHORT).show()
+                                "pengurus" -> {
+                                    Toast.makeText(this, "Login Pengurus Wilayah: $region", Toast.LENGTH_SHORT).show()
+                                    startActivity(Intent(this, DashboardKonsultanActivity::class.java))
+                                }
+                                "admin" -> {
+                                    startActivity(Intent(this, DashboardAdminActivity::class.java))
+                                }
+                                else -> Toast.makeText(this, "Role tidak dikenali.", Toast.LENGTH_SHORT).show()
                             }
                             finish()
                         }
