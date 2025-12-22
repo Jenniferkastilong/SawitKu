@@ -1,218 +1,181 @@
 package com.example.sawitku
 
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Typeface
-import android.os.Build
+import android.graphics.Color
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.*
-import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.android.volley.Request
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
 import com.example.sawitku.ui.news.BeritaActivity
-import com.example.sawitku.ui.kalkulator.KalkulatorActivity
-import com.example.sawitku.ui.news.HargaActivity
+import com.example.sawitku.HargaActivity
 import com.example.sawitku.ui.profile.Profile
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import org.json.JSONObject
+import com.google.firebase.firestore.Query
 
 class Home : Fragment() {
 
-    private lateinit var tvWilayah: TextView
-    private lateinit var tvTotalLahan: TextView
-    private lateinit var tvTotalPetani: TextView
-    private lateinit var llNotifikasi: LinearLayout
-    private lateinit var tvWeatherTemp: TextView
-    private lateinit var ivWeatherIcon: ImageView
+    private lateinit var tvUsername: TextView
+    private lateinit var tvPriceValue: TextView
+    private lateinit var tvLabelWilayah: TextView
     private lateinit var ivProfile: ImageView
+    private lateinit var lineChart: LineChart
+    private lateinit var ivCommunity: ImageView
+    private lateinit var btnNotification: FrameLayout
 
-    private lateinit var btnBerita: ImageButton
-    private lateinit var btnHarga: ImageButton
-    private lateinit var btnKonsultasi: ImageButton
-    private lateinit var btnKalkulator: ImageButton
-
-    private val auth = FirebaseAuth.getInstance()
     private val firestore = FirebaseFirestore.getInstance()
+    private val auth = FirebaseAuth.getInstance()
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
-        inflater: android.view.LayoutInflater,
-        container: android.view.ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): android.view.View {
+    ): View? {
+        // Pastikan layout ini adalah fragment_home.xml yang berisi Card Harga dan Quick Button
         val v = inflater.inflate(R.layout.fragment_home, container, false)
 
-        // Bind views
-        tvWilayah = v.findViewById(R.id.tv_wilayah_nama)
-        tvTotalLahan = v.findViewById(R.id.tv_total_lahan)
-        tvTotalPetani = v.findViewById(R.id.tv_total_petani)
-        llNotifikasi = v.findViewById(R.id.ll_notifikasi)
-        tvWeatherTemp = v.findViewById(R.id.tv_weather_temp)
-        ivWeatherIcon = v.findViewById(R.id.iv_weather_icon)
+        // Binding Views
+        tvUsername = v.findViewById(R.id.tv_username)
+        tvPriceValue = v.findViewById(R.id.tv_price_value)
+        tvLabelWilayah = v.findViewById(R.id.tv_label_wilayah) // Sesuai ID di XML Anda
         ivProfile = v.findViewById(R.id.iv_profile_pic)
+        lineChart = v.findViewById(R.id.line_chart_harga)
+        ivCommunity = v.findViewById(R.id.iv_community_latest)
+        btnNotification = v.findViewById(R.id.btn_notification)
 
-        btnBerita = v.findViewById(R.id.btnBerita)
-        btnHarga = v.findViewById(R.id.btnHarga)
-        btnKonsultasi = v.findViewById(R.id.btnKonsultasi)
-        btnKalkulator = v.findViewById(R.id.btnKalkulator)
-
-        fetchUserDataAndWilayah()
-        setupNotifikasi()
-        setupButtonActions()
+        setupChartStyle()
+        loadUserData()
+        loadCommunityData()
+        setupNavigation(v)
 
         return v
     }
 
-    private fun fetchUserDataAndWilayah() {
-        val uid = auth.currentUser?.uid ?: return
+    private fun setupChartStyle() {
+        lineChart.apply {
+            description.isEnabled = false
+            legend.isEnabled = false
+            setTouchEnabled(false) // Di Home cukup visual saja
+            xAxis.isEnabled = false
+            axisLeft.isEnabled = false
+            axisRight.isEnabled = false
+            setDrawGridBackground(false)
+            // Menghilangkan offset agar grafik memenuhi area kartu
+            setViewPortOffsets(0f, 0f, 0f, 0f)
+        }
+    }
 
-        firestore.collection("users").document(uid)
+    private fun loadUserData() {
+        val uid = auth.currentUser?.uid ?: return
+        firestore.collection("users").document(uid).get().addOnSuccessListener { doc ->
+            if (!isAdded) return@addOnSuccessListener
+
+            val nama = doc.getString("nama") ?: "User"
+            val wilayah = doc.getString("wilayahId") ?: "RIAU"
+
+            tvUsername.text = nama
+            tvLabelWilayah.text = "HARGA TBS $wilayah"
+
+            Glide.with(this).load(doc.getString("foto_url"))
+                .circleCrop()
+                .placeholder(R.drawable.ic_profile)
+                .into(ivProfile)
+
+            // Setelah tahu wilayahnya, ambil data harganya
+            loadPriceData(wilayah)
+        }
+    }
+
+    private fun loadPriceData(wilayah: String) {
+        firestore.collection("harga_tbs")
+            .whereEqualTo("wilayah", wilayah)
+            .orderBy("tanggal", Query.Direction.ASCENDING)
+            .limit(10)
             .get()
-            .addOnSuccessListener { doc ->
+            .addOnSuccessListener { snapshot ->
                 if (!isAdded) return@addOnSuccessListener
-                if (doc != null && doc.exists()) {
-                    val wilayah = doc.getString("wilayahId") ?: "-"
-                    val luasLahan = doc.getLong("luas_lahan") ?: 0
-                    val fotoUrl = doc.getString("foto_url")
-                    val nama = doc.getString("nama")
 
-                    tvWilayah.text = wilayah
-                    tvTotalLahan.text = "$luasLahan Ha"
+                val entries = ArrayList<Entry>()
+                var lastPrice = 0f
 
-                    firestore.collection("users")
-                        .whereEqualTo("wilayahId", wilayah)
-                        .whereEqualTo("role", "Petani")
-                        .get()
-                        .addOnSuccessListener { snapshot ->
-                            if (!isAdded) return@addOnSuccessListener
-                            tvTotalPetani.text = snapshot.size().toString()
-                        }
-
-                    if (!fotoUrl.isNullOrBlank() && isAdded) {
-                        Glide.with(this)
-                            .load(fotoUrl)
-                            .placeholder(R.drawable.ic_profile)
-                            .error(generateInitialPlaceholder(nama))
-                            .into(ivProfile)
-                    } else if (isAdded) {
-                        ivProfile.setImageBitmap(generateInitialPlaceholder(nama))
+                if (snapshot.isEmpty) {
+                    // Fallback data simulasi ML jika database kosong
+                    entries.add(Entry(0f, 2200f))
+                    entries.add(Entry(1f, 2350f))
+                    entries.add(Entry(2f, 2300f))
+                    entries.add(Entry(3f, 2450f))
+                    lastPrice = 2450f
+                } else {
+                    snapshot.documents.forEachIndexed { index, doc ->
+                        val harga = doc.getDouble("harga")?.toFloat() ?: 0f
+                        entries.add(Entry(index.toFloat(), harga))
+                        lastPrice = harga
                     }
-
-                    ivProfile.setOnClickListener {
-                        if (!isAdded) return@setOnClickListener
-                        requireActivity().supportFragmentManager.beginTransaction()
-                            .replace(R.id.fragmentContainer, Profile())
-                            .addToBackStack(null)
-                            .commit()
-                    }
-
-                    setupCuacaApi(wilayah)
                 }
-            }
-            .addOnFailureListener {
-                if (!isAdded) return@addOnFailureListener
-                Toast.makeText(requireContext(), "Gagal memuat data user", Toast.LENGTH_SHORT).show()
+
+                tvPriceValue.text = "Rp ${String.format("%,.0f", lastPrice)} /kg"
+                updateChart(entries)
             }
     }
 
-    private fun setupCuacaApi(wilayah: String) {
-        if (!isAdded) return
-        val apiKey = "deb4b6298cf64cf28c88e7c64fdd84d0"
-        val url =
-            "https://api.openweathermap.org/data/2.5/weather?q=$wilayah&appid=$apiKey&units=metric"
+    private fun updateChart(entries: List<Entry>) {
+        if (entries.isEmpty() || !isAdded) return
 
-        val request = StringRequest(Request.Method.GET, url,
-            { response ->
-                if (!isAdded) return@StringRequest
-                try {
-                    val json = JSONObject(response)
-                    val temp = json.getJSONObject("main").getDouble("temp")
-                    val iconCode = json.getJSONArray("weather").getJSONObject(0).getString("icon")
+        val dataSet = LineDataSet(entries, "Harga").apply {
+            mode = LineDataSet.Mode.CUBIC_BEZIER
+            color = Color.WHITE
+            lineWidth = 3f
+            setDrawCircles(false)
+            setDrawValues(false)
+            setDrawFilled(true)
+            fillDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.bg_gradient_cart)
+        }
 
-                    tvWeatherTemp.text = "${temp.toInt()}°C"
-
-                    val resId = resources.getIdentifier(
-                        "ic_weather_$iconCode",
-                        "drawable",
-                        requireContext().packageName
-                    )
-                    if (resId != 0) ivWeatherIcon.setImageResource(resId)
-                } catch (e: Exception) {
-                    tvWeatherTemp.text = "-"
-                    Toast.makeText(requireContext(), "Error parsing cuaca", Toast.LENGTH_SHORT).show()
-                }
-            },
-            { error ->
-                if (!isAdded) return@StringRequest
-                tvWeatherTemp.text = "-"
-                Toast.makeText(requireContext(), "Gagal mengambil cuaca: ${error.message}", Toast.LENGTH_SHORT).show()
-            })
-
-        Volley.newRequestQueue(requireContext()).add(request)
+        lineChart.data = LineData(dataSet)
+        lineChart.animateY(1000)
+        lineChart.invalidate()
     }
 
-    private fun generateInitialPlaceholder(nama: String?): Bitmap? {
-        if (!isAdded) return null
-        val initial = nama?.firstOrNull()?.uppercaseChar() ?: 'U'
-        val size = 200
-        val bmp = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bmp)
-        canvas.drawColor(ContextCompat.getColor(requireContext(), android.R.color.darker_gray))
-        val paint = Paint().apply {
-            color = ContextCompat.getColor(requireContext(), android.R.color.white)
-            textSize = 100f
-            isAntiAlias = true
-            typeface = Typeface.DEFAULT_BOLD
-        }
-        val textWidth = paint.measureText(initial.toString())
-        val x = (size - textWidth) / 2
-        val y = size / 2 - (paint.descent() + paint.ascent()) / 2
-        canvas.drawText(initial.toString(), x, y, paint)
-        return bmp
+    private fun loadCommunityData() {
+        firestore.collection("community")
+            .orderBy("timestamp", Query.Direction.DESCENDING)
+            .limit(1)
+            .get()
+            .addOnSuccessListener { snapshot ->
+                if (!isAdded || snapshot.isEmpty) return@addOnSuccessListener
+                val imageUrl = snapshot.documents[0].getString("imageUrl")
+                Glide.with(this).load(imageUrl).into(ivCommunity)
+            }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun setupNotifikasi() {
-        val uid = auth.currentUser?.uid ?: return
-        val tx = llNotifikasi.findViewById<TextView>(R.id.text_notif)
-        if (!isAdded) return
-        tx.text = if (!SharedData.hasSubmittedThisMonth(uid)) {
-            "Anda belum submit laporan bulan ini!"
-        } else {
-            "Tidak ada notifikasi"
-        }
-    }
-
-    private fun setupButtonActions() {
-        btnBerita.setOnClickListener {
-            if (!isAdded) return@setOnClickListener
-            val intent = Intent(requireContext(), BeritaActivity::class.java)
-            startActivity(intent)
+    private fun setupNavigation(v: View) {
+        // Navigasi ke Profil
+        ivProfile.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, Profile())
+                .addToBackStack(null)
+                .commit()
         }
 
-        btnHarga.setOnClickListener {
-            if (!isAdded) return@setOnClickListener
-            val intent = Intent(requireContext(), HargaActivity::class.java)
-            startActivity(intent)
+        // Navigasi ke Notifikasi (Activity)
+        btnNotification.setOnClickListener {
+            startActivity(Intent(requireContext(), NotificationActivity::class.java))
         }
 
-//        btnKonsultasi.setOnClickListener {
-//            if (!isAdded) return@setOnClickListener
-//            val intent = Intent(requireContext(), KonsultasiActivity::class.java)
-//            startActivity(intent)
-//        }
+        // Quick Buttons (Navigasi ke Activity Berita & Harga)
+        v.findViewById<View>(R.id.btn_nav_berita).setOnClickListener {
+            startActivity(Intent(requireContext(), BeritaActivity::class.java))
+        }
 
-        btnKalkulator.setOnClickListener {
-            if (!isAdded) return@setOnClickListener
-            val intent = Intent(requireContext(), KalkulatorActivity::class.java)
-            startActivity(intent)
+        v.findViewById<View>(R.id.btn_nav_harga).setOnClickListener {
+            startActivity(Intent(requireContext(), HargaActivity::class.java))
         }
     }
 }

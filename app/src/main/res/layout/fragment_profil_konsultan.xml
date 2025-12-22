@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0F2E1C"
+    android:padding="16dp">
+
+    <!-- JUDUL -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Profil Konsultan"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:paddingBottom="12dp"/>
+
+    <!-- CARD PROFIL -->
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:padding="16dp"
+        android:elevation="6dp">
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/ic_profile"
+            android:background="@drawable/circle_green"
+            android:padding="4dp"/>
+
+        <TextView
+            android:id="@+id/tvNamaKonsultan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Konsultan"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="@color/dgreen"
+            android:layout_gravity="center_horizontal"
+            android:paddingTop="12dp"/>
+
+        <TextView
+            android:id="@+id/tvRoleKonsultan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Konsultan"
+            android:textSize="14sp"
+            android:textColor="@color/green"
+            android:layout_gravity="center_horizontal"
+            android:paddingBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/tvEmailKonsultan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="konsultan@email.com"
+            android:textColor="@color/black"
+            android:layout_gravity="center_horizontal"
+            android:paddingBottom="16dp"/>
+
+        <Button
+            android:id="@+id/btnEditProfil"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Edit Profil"
+            android:textColor="@color/black"
+            android:backgroundTint="@color/green"
+            android:layout_marginBottom="8dp"/>
+
+        <Button
+            android:id="@+id/btnLogout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Keluar"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@color/orange"/>
+    </LinearLayout>
+
+</LinearLayout>

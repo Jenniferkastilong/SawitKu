@@ -1,8 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.SawitKu" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:fontFamily">@font/lexend</item>
+        <item name="fontFamily">@font/lexend</item>
     </style>
 
     <style name="Theme.NavigationDrawer.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
@@ -15,4 +15,5 @@
     <style name="Theme.NavigationDrawer.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="Theme.SawitKu" parent="Base.Theme.SawitKu" />
+
 </resources>

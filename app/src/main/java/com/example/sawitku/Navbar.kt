@@ -4,11 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import com.example.sawitku.ui.komunitas.Komunitas
 
 class Navbar : Fragment() {
+
+    private lateinit var btnHome: LinearLayout
+    private lateinit var btnLahan: LinearLayout
+    private lateinit var btnKomunitas: LinearLayout
+    private lateinit var navbarButtons: List<LinearLayout>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -17,53 +22,42 @@ class Navbar : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_navbar, container, false)
 
-        val btnHome = view.findViewById<Button>(R.id.btnHome)
-        val btnLahan = view.findViewById<Button>(R.id.btnLahan)
-        val btnKomunitas = view.findViewById<Button>(R.id.btnKomunitas)
-        val btnSetting = view.findViewById<Button>(R.id.btnSetting)
+        btnHome = view.findViewById(R.id.btnHome)
+        btnLahan = view.findViewById(R.id.btnLahan)
+        btnKomunitas = view.findViewById(R.id.btnKomunitas)
 
-        val buttons = listOf(btnHome, btnLahan, btnKomunitas, btnSetting)
+        navbarButtons = listOf(btnHome, btnLahan, btnKomunitas)
 
-        fun setActiveButton(activeButton: Button) {
-            buttons.forEach { it.isSelected = (it == activeButton) }
-        }
-
-        // tampilkan Home fragment pertama kali
         if (savedInstanceState == null) {
-            childFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, Home())
-                .commit()
-            setActiveButton(btnHome)
+            loadFragment(Home())
+            updateNavbarStatus(btnHome)
         }
 
         btnHome.setOnClickListener {
-            childFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, Home())
-                .commit()
-            setActiveButton(btnHome)
+            loadFragment(Home())
+            updateNavbarStatus(btnHome)
         }
 
         btnLahan.setOnClickListener {
-            childFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, LaporanLahan())
-                .commit()
-            setActiveButton(btnLahan)
+            loadFragment(LaporanLahan())
+            updateNavbarStatus(btnLahan)
         }
 
         btnKomunitas.setOnClickListener {
-            childFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, Komunitas())
-                .commit()
-            setActiveButton(btnKomunitas)
-        }
-
-        btnSetting.setOnClickListener {
-            childFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, Setting())
-                .commit()
-            setActiveButton(btnSetting)
+            loadFragment(Komunitas())
+            updateNavbarStatus(btnKomunitas)
         }
 
         return view
+    }
+
+    private fun loadFragment(fragment: Fragment) {
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, fragment)
+            .commit()
+    }
+
+    private fun updateNavbarStatus(selectedMenu: LinearLayout) {
+        navbarButtons.forEach { it.isSelected = (it == selectedMenu) }
     }
 }
