@@ -1,96 +1,73 @@
 package com.example.sawitku
 
-import android.app.AlertDialog
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Toast
+import android.view.*
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.sawitku.adapter.UserAdminAdapter
-import com.example.sawitku.model.UserModel
-import com.google.firebase.firestore.FirebaseFirestore
-import com.example.sawitku.R
 
-class AdminAkunFragment : Fragment(), UserAdminAdapter.OnUserActionListener {
-
-    private lateinit var rvUsers: RecyclerView
-    private lateinit var adapter: UserAdminAdapter
-    private var userList = ArrayList<UserModel>()
-    private lateinit var db: FirebaseFirestore
+class AdminAkunFragment : Fragment() {
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // 3. Inflate layout disimpan ke variabel 'view'
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
         val view = inflater.inflate(R.layout.fragment_admin_akun, container, false)
 
-        db = FirebaseFirestore.getInstance()
-
-        // 4. Gunakan 'view.findViewById', bukan langsung findViewById
-        rvUsers = view.findViewById(R.id.recyclerViewUsers)
-
-        rvUsers.layoutManager = LinearLayoutManager(context)
-
-        adapter = UserAdminAdapter(userList, this)
-        rvUsers.adapter = adapter
-
-        fetchUsers()
+        val rv = view.findViewById<RecyclerView>(R.id.recyclerViewAkun)
+        rv.layoutManager = LinearLayoutManager(requireContext())
+        rv.adapter = UserAdapter(SharedData.userList)
 
         return view
     }
 
-    private fun fetchUsers() {
-        db.collection("users")
-            .addSnapshotListener { snapshot, e ->
-                if (e != null) {
-                    Toast.makeText(context, "Gagal ambil data", Toast.LENGTH_SHORT).show()
-                    return@addSnapshotListener
-                }
+    inner class UserAdapter(
+        private val users: MutableList<SharedData.User>
+    ) : RecyclerView.Adapter<UserAdapter.VH>() {
 
-                userList.clear()
-                if (snapshot != null) {
-                    for (doc in snapshot.documents) {
-                        val user = doc.toObject(UserModel::class.java)
-                        user?.uid = doc.id
-                        // Filter: Jangan tampilkan admin sendiri
-                        if (user != null && user.role != "admin") {
-                            userList.add(user)
-                        }
-                    }
-                    adapter.notifyDataSetChanged()
-                }
-            }
-    }
+        inner class VH(v: View) : RecyclerView.ViewHolder(v) {
+            val tvEmail: TextView = v.findViewById(R.id.tvNamaUser)
+            val tvRole: TextView = v.findViewById(R.id.tvRoleUser)
+            val btnToggle: Button = v.findViewById(R.id.btnToggleAkun)
+            val btnHapus: Button = v.findViewById(R.id.btnHapusUser)
+        }
 
-    // Implementasi Interface dari Adapter
-    override fun onToggleStatus(user: UserModel, currentStatus: Boolean) {
-        // Gunakan 'currentStatus' di sini
-        db.collection("users").document(user.uid)
-            .update("aktif", currentStatus)
-            .addOnSuccessListener {
-                val msg = if (currentStatus) "User Diaktifkan" else "User Dinonaktifkan"
-                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
+            val v = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_user_admin, parent, false)
+            return VH(v)
+        }
+
+        override fun onBindViewHolder(holder: VH, pos: Int) {
+            val u = users[pos]
+
+            holder.tvEmail.text = u.username
+            holder.tvRole.text = "Role: ${u.role}"
+
+            holder.btnToggle.text =
+                if (u.aktif) "Nonaktifkan" else "Aktifkan"
+
+            holder.btnToggle.setOnClickListener {
+                u.aktif = !u.aktif
+                notifyItemChanged(pos)
+                Toast.makeText(
+                    requireContext(),
+                    "${u.username} ${if (u.aktif) "diaktifkan" else "dinonaktifkan"}",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
-            .addOnFailureListener {
-                Toast.makeText(context, "Gagal update status", Toast.LENGTH_SHORT).show()
+
+            holder.btnHapus.setOnClickListener {
+                users.removeAt(pos)
+                notifyItemRemoved(pos)
+                Toast.makeText(
+                    requireContext(),
+                    "User dihapus",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
-    }
-    override fun onDeleteUser(user: UserModel) {
-        AlertDialog.Builder(context)
-            .setTitle("Hapus User")
-            .setMessage("Hapus data ${user.name}? User tidak akan bisa login lagi.")
-            .setPositiveButton("Hapus") { _, _ ->
-                db.collection("users").document(user.uid)
-                    .delete()
-                    .addOnSuccessListener {
-                        Toast.makeText(context, "Data user dihapus", Toast.LENGTH_SHORT).show()
-                    }
-            }
-            .setNegativeButton("Batal", null)
-            .show()
+        }
+
+        override fun getItemCount() = users.size
     }
 }
