@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
-import com.example.sawitku.ui.komunitas.Komunitas
 
 class Navbar : Fragment() {
 
@@ -19,7 +18,8 @@ class Navbar : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
+
         val view = inflater.inflate(R.layout.fragment_navbar, container, false)
 
         btnHome = view.findViewById(R.id.btnHome)
@@ -28,6 +28,14 @@ class Navbar : Fragment() {
 
         navbarButtons = listOf(btnHome, btnLahan, btnKomunitas)
 
+<<<<<<< HEAD
+=======
+        fun setActiveButton(activeButton: Button) {
+            buttons.forEach { it.isSelected = (it == activeButton) }
+        }
+
+        // default fragment
+>>>>>>> 39971d1 (Menambahkan fitur komunitas & detail post)
         if (savedInstanceState == null) {
             loadFragment(Home())
             updateNavbarStatus(btnHome)
@@ -50,6 +58,7 @@ class Navbar : Fragment() {
 
         return view
     }
+<<<<<<< HEAD
 
     private fun loadFragment(fragment: Fragment) {
         parentFragmentManager.beginTransaction()
@@ -61,3 +70,6 @@ class Navbar : Fragment() {
         navbarButtons.forEach { it.isSelected = (it == selectedMenu) }
     }
 }
+=======
+}
+>>>>>>> 39971d1 (Menambahkan fitur komunitas & detail post)
