@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "696459921857",
-    "project_id": "sawitku-b0e1a",
-    "storage_bucket": "sawitku-b0e1a.firebasestorage.app"
+    "project_number": "126591770011",
+    "project_id": "sawitku-db29073f",
+    "storage_bucket": "sawitku-db29073f.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:696459921857:android:41ca70a12c6a6cc0024740",
+        "mobilesdk_app_id": "1:126591770011:android:c6e96b7c7db2bbc601953e",
         "android_client_info": {
           "package_name": "com.example.sawitku"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAPFojDSetdiT9ChbNSlUkmYfT1vE_kGqU"
+          "current_key": "AIzaSyBpzOg1ldXXWhZXvj8Qdl30hrFaMTw5_0A"
         }
       ],
       "services": {

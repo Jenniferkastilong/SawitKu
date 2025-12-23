@@ -3,9 +3,15 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="white90">#E6FFFFFF</color>
+    <color name="gray">#C8C8C8</color>
+    <color name="dgray">#9B9B9B</color>
     <color name="green">#D6E7C6</color>
+    <color name="lgreen">#13EC5B</color>
+    <color name="dgreen">#89A86C</color>
     <color name="orange">#FF9800</color>
+    <color name="lorange">#E9C37E</color>
     <color name="blue">#03A9F4</color>
     <color name="clay">#46D0DF</color>
-    <color name="navbar_button_color">#FF9800</color>
+    <color name="green_sawit">#2E7D32</color>
+    <color name="light_gray">#F5F5F5</color>
 </resources>

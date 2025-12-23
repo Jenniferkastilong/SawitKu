@@ -4,57 +4,72 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 
 class Navbar : Fragment() {
+
+    private lateinit var btnHome: LinearLayout
+    private lateinit var btnLahan: LinearLayout
+    private lateinit var btnKomunitas: LinearLayout
+    private lateinit var navbarButtons: List<LinearLayout>
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
+
         val view = inflater.inflate(R.layout.fragment_navbar, container, false)
 
-        val btnHome = view.findViewById<Button>(R.id.btnHome)
-        val btnProfile = view.findViewById<Button>(R.id.btnProfile)
-        val btnSetting = view.findViewById<Button>(R.id.btnSetting)
+        btnHome = view.findViewById(R.id.btnHome)
+        btnLahan = view.findViewById(R.id.btnLahan)
+        btnKomunitas = view.findViewById(R.id.btnKomunitas)
 
-        val buttons = listOf(btnHome, btnProfile, btnSetting)
+        navbarButtons = listOf(btnHome, btnLahan, btnKomunitas)
 
+<<<<<<< HEAD
+=======
         fun setActiveButton(activeButton: Button) {
             buttons.forEach { it.isSelected = (it == activeButton) }
         }
 
-        // tampilkan Home fragment pertama kali
+        // default fragment
+>>>>>>> 39971d1 (Menambahkan fitur komunitas & detail post)
         if (savedInstanceState == null) {
-            childFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, Home())
-                .commit()
-            setActiveButton(btnHome)
+            loadFragment(Home())
+            updateNavbarStatus(btnHome)
         }
 
         btnHome.setOnClickListener {
-            childFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, Home())
-                .commit()
-            setActiveButton(btnHome)
+            loadFragment(Home())
+            updateNavbarStatus(btnHome)
         }
 
-        btnProfile.setOnClickListener {
-            childFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, Profile())
-                .commit()
-            setActiveButton(btnProfile)
+        btnLahan.setOnClickListener {
+            loadFragment(LaporanLahan())
+            updateNavbarStatus(btnLahan)
         }
 
-        btnSetting.setOnClickListener {
-            childFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, Setting())
-                .commit()
-            setActiveButton(btnSetting)
+        btnKomunitas.setOnClickListener {
+            loadFragment(Komunitas())
+            updateNavbarStatus(btnKomunitas)
         }
 
         return view
     }
+<<<<<<< HEAD
+
+    private fun loadFragment(fragment: Fragment) {
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, fragment)
+            .commit()
+    }
+
+    private fun updateNavbarStatus(selectedMenu: LinearLayout) {
+        navbarButtons.forEach { it.isSelected = (it == selectedMenu) }
+    }
 }
+=======
+}
+>>>>>>> 39971d1 (Menambahkan fitur komunitas & detail post)

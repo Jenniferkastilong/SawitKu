@@ -1,57 +1,98 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white90"
+    android:background="#F8F9FA"
     android:fitsSystemWindows="true">
 
-    <!-- Tempat fragment -->
     <FrameLayout
         android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/navbar" />
 
-    <!-- Navbar di bawah -->
     <LinearLayout
         android:id="@+id/navbar"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="65dp"
         android:background="@color/white"
         android:orientation="horizontal"
         android:gravity="center"
         android:layout_alignParentBottom="true"
         android:elevation="8dp"
-        android:padding="8dp">
+        android:weightSum="3">
 
-        <Button
+        <LinearLayout
             android:id="@+id/btnHome"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:text="Home"
-            android:textColor="@color/navbar_button_color"
-            android:textSize="14sp" />
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true">
 
-        <Button
-            android:id="@+id/btnProfile"
-            android:layout_width="0dp"
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/home"
+                android:duplicateParentState="true"
+                app:tint="@color/navbar_button_color" /> <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:text="Profile"
+            android:text="Beranda"
+            android:duplicateParentState="true"
             android:textColor="@color/navbar_button_color"
-            android:textSize="14sp" />
+            android:textSize="12sp" />
+        </LinearLayout>
 
-        <Button
-            android:id="@+id/btnSetting"
+        <LinearLayout
+            android:id="@+id/btnLahan"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:text="Settings"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/laporan"
+                android:duplicateParentState="true"
+                app:tint="@color/navbar_button_color" /> <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Laporan Lahan"
+            android:duplicateParentState="true"
             android:textColor="@color/navbar_button_color"
-            android:textSize="14sp" />
+            android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btnKomunitas"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/komunitas"
+                android:duplicateParentState="true"
+                app:tint="@color/navbar_button_color" /> <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Komunitas"
+            android:duplicateParentState="true"
+            android:textColor="@color/navbar_button_color"
+            android:textSize="12sp" />
+        </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_gradient"
+    android:padding="16dp"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <!-- Judul -->
+        <TextView
+            android:id="@+id/tvJudul"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Laporan Kebun Sawit"
+            android:textStyle="bold"
+            android:textSize="22sp"
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="16dp" />
+
+        <!-- Nama Kebun -->
+        <EditText
+            android:id="@+id/etNamaKebun"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nama atau ID Kebun"
+            android:inputType="textPersonName"
+            android:background="@drawable/bg_edittext"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Luas Lahan -->
+        <EditText
+            android:id="@+id/etLuas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Luas Lahan (ha)"
+            android:inputType="numberDecimal"
+            android:background="@drawable/bg_edittext"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Tahun Tanam Opsional -->
+        <EditText
+            android:id="@+id/etTahunTanam"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Tahun Tanam (opsional)"
+            android:inputType="number"
+            android:background="@drawable/bg_edittext"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Pilih Tanggal -->
+        <Button
+            android:id="@+id/btnTanggal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pilih Tanggal"
+            android:textAllCaps="false"
+            android:backgroundTint="@color/green"
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Pilih Foto -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
+
+            <Button
+                android:id="@+id/btnAmbilFoto"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Kamera"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="@color/dgreen" />
+
+<!--            <Button-->
+<!--                android:id="@+id/btnPickGallery"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_weight="1"-->
+<!--                android:text="Pilih Galeri"/>-->
+        </LinearLayout>
+
+        <!-- Preview Foto -->
+        <ImageView
+            android:id="@+id/ivFoto"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:scaleType="centerCrop"
+            android:background="@android:color/darker_gray"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Tombol Ambil Lokasi -->
+        <Button
+            android:id="@+id/btnAmbilGPS"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ambil Lokasi GPS"
+            android:textAllCaps="false"
+            android:backgroundTint="@color/green"
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Map Preview -->
+        <FrameLayout
+            android:id="@+id/mapView"
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:layout_marginBottom="16dp"
+            android:background="@android:color/darker_gray" />
+
+        <!-- Tombol Simpan -->
+        <Button
+            android:id="@+id/btnSimpan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Simpan Laporan"
+            android:textAllCaps="false"
+            android:backgroundTint="@color/orange"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Riwayat Laporan -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Riwayat Laporan"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="8dp"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            android:layout_marginBottom="40dp"/>
+    </LinearLayout>
+</ScrollView>
